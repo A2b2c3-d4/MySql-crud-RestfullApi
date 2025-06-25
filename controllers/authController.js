@@ -59,11 +59,14 @@ exports.deleteUser = async (req, res) => {
       where: { id: req.params.id }
     });
 
-    if (!deletedUser) return res.status(404).json({ message: 'User not found'});
+    if (!deletedUser){
+        return res.status(404).json({ message: 'User not found'});
+    } 
 
-    res.json({ message: 'User deleted successfully', deletedUser });
+    res.status(201).json({ message: 'User deleted successfully', deletedUser });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.log(err);
+    res.status(500).json({ message: "Internal server error"});
   }
 };
 
