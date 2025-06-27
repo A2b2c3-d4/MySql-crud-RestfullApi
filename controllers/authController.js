@@ -71,9 +71,9 @@ exports.deleteUser = async (req, res) => {
 };
 
 exports.register = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
   
-  if(!name || !email || !password){
+  if(!name || !email || !password || !role){
     return res.status(404).json({message: "All fields are required"});
   }
 
@@ -81,6 +81,13 @@ exports.register = async (req, res) => {
     // check if email already exists
     const userExists = await User.findOne({ where: { email } });
     if (userExists) return res.status(400).json({ message: "Email already registered" });
+
+    if (role === 'admin') {
+      const adminUser = await User.findOne({ where: { role: "admin" } });
+      if (adminUser) {
+        return res.status(400).json({ message: "Admin already exists" });
+      }
+    }
 
     // if(password.length >= 8){
     //   return res.status(200).json({message: "valid password created"});
@@ -90,7 +97,8 @@ exports.register = async (req, res) => {
     const newUser = await User.create({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      role
     });
 
     res.status(201).json({ message: "User registered successfully", newUser });
