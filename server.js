@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const db = require('./config/db.js'); // Assuming db.js exports a default object
-const authRoutes = require('./routes/userRoutes.js'); // Add `.js` extension
+const db = require('./config/db.js');
+const authRoutes = require('./routes/userRoutes.js'); 
 
 const app = express();
 

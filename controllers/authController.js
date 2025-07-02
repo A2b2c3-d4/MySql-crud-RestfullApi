@@ -18,7 +18,10 @@ exports.createUser = async (req, res) => {
 exports.getUsers = async (req, res) => {
   try {
     const users = await User.findAll();
-    res.json(users);
+
+    if(users){
+      return res.status(201).json({message: "It return user data", users});
+    }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -85,7 +88,7 @@ exports.register = async (req, res) => {
     if (role === 'admin') {
       const adminUser = await User.findOne({ where: { role: "admin" } });
       if (adminUser) {
-        return res.status(400).json({ message: "Admin already exists" });
+        return res.status(400).json({ message: "User has already admin role" });
       }
     }
 
@@ -116,7 +119,7 @@ exports.login = async (req, res) => {
 
   try {
     const user = await User.findOne({ where: { email } });
-    if (!user) return res.status(400).json({ message: "Invalid email or password" });
+    if (user === null) return res.status(400).json({ message: "Invalid email or password" });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "Invalid email or password" });
